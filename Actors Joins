@@ -1,3 +1,4 @@
+
 CREATE TABLE movies (id INTEGER PRIMARY KEY, 
     title TEXT, 
     release INTEGER);
@@ -38,7 +39,7 @@ INSERT INTO actors (name, movie_id, show_id) VALUES ("Donald Glover", 5, 4);
 INSERT INTO actors (name, movie_id) VALUES ("Robert Downey Jr.", 2);
 
 
-/* What shows and movies from the lists have each of these actors been in? */
+## What shows and movies from the lists have each of these actors been in?
 SELECT actors.name as Actor, movies.title as Movie, tv_shows.title as Show
 FROM actors
 LEFT OUTER JOIN movies
@@ -46,7 +47,7 @@ ON actors.movie_id = movies.id
 LEFT OUTER JOIN tv_shows
 ON actors.show_id = tv_shows.id;
 
-/* Which actors have been in BOTH a movie and a tv show on these lists? */
+## Which actors have been in BOTH a movie and a tv show on these lists?
 SELECT actors.name as Actor, movies.title as Movie, tv_shows.title as Show
 FROM actors
 JOIN movies
@@ -54,7 +55,7 @@ ON actors.movie_id = movies.id
 JOIN tv_shows
 ON actors.show_id = tv_shows.id;
 
-/* Which actors were in Star Wars: Attack of the Clones? */
+## Which actors were in Star Wars: Attack of the Clones?
 SELECT actors.name as Actor
 FROM actors
 JOIN movies
