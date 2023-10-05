@@ -1,3 +1,4 @@
+#This analysis utilized the following actors, movies, and tv_shows datasets:
 
 CREATE TABLE movies (id INTEGER PRIMARY KEY, 
     title TEXT, 
