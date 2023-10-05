@@ -1,0 +1,62 @@
+CREATE TABLE movies (id INTEGER PRIMARY KEY, 
+    title TEXT, 
+    release INTEGER);
+
+CREATE TABLE tv_shows (id INTEGER PRIMARY KEY,      title TEXT, 
+    release INTEGER);
+    
+CREATE TABLE actors (id INTEGER PRIMARY KEY, 
+    name TEXT, 
+    movie_id INTEGER, 
+    show_id INTEGER);
+
+INSERT INTO movies (title, release) VALUES ("Spiderman: Homecoming", 2017);
+INSERT INTO movies (title, release) VALUES ("Avengers", 2012);
+INSERT INTO movies (title, release) VALUES ("Divergent", 2014);
+INSERT INTO movies (title, release) VALUES ("Star Wars: Attack of the Clones", 2002);
+INSERT INTO movies (title, release) VALUES ("Solo", 2018);
+INSERT INTO movies (title, release) VALUES ("Across the Spiderverse", 2023);
+INSERT INTO movies (title, release) VALUES ("Divergent", 2014);
+
+INSERT INTO tv_shows (title, release) VALUES ("Heartstopper", 2022);
+INSERT INTO tv_shows (title, release) VALUES ("Euphoria", 2019);
+INSERT INTO tv_shows (title, release) VALUES ("The Fosters", 2013);
+INSERT INTO tv_shows (title, release) VALUES ("Community", 2009);
+INSERT INTO tv_shows (title, release) VALUES ("Schitt's Creek", 2015);
+INSERT INTO tv_shows (title, release) VALUES ("The Secret Life of the American Teenager", 2008);
+
+INSERT INTO actors (name, movie_id) VALUES ("Natalie Portman", 4);
+INSERT INTO actors (name, movie_id, show_id) VALUES ("Zendaya", 1, 2);
+INSERT INTO actors (name, show_id) VALUES ("Kit Cooper", 1);
+INSERT INTO actors (name, show_id) VALUES ("Maia Mitchell", 3);
+INSERT INTO actors (name, show_id) VALUES ("Dan Levy", 5);
+INSERT INTO actors (name, movie_id, show_id) VALUES ("Shaliene Woodley", 7, 6);
+INSERT INTO actors (name, movie_id) VALUES ("Ewan McGregor", 4);
+INSERT INTO actors (name, movie_id) VALUES ("Hayden Christensen", 4);
+INSERT INTO actors (name, movie_id) VALUES ("Tom Holland", 1);
+INSERT INTO actors (name, movie_id, show_id) VALUES ("Donald Glover", 5, 4);
+INSERT INTO actors (name, movie_id) VALUES ("Robert Downey Jr.", 2);
+
+
+/* What shows and movies from the lists have each of these actors been in? */
+SELECT actors.name as Actor, movies.title as Movie, tv_shows.title as Show
+FROM actors
+LEFT OUTER JOIN movies
+ON actors.movie_id = movies.id
+LEFT OUTER JOIN tv_shows
+ON actors.show_id = tv_shows.id;
+
+/* Which actors have been in BOTH a movie and a tv show on these lists? */
+SELECT actors.name as Actor, movies.title as Movie, tv_shows.title as Show
+FROM actors
+JOIN movies
+ON actors.movie_id = movies.id
+JOIN tv_shows
+ON actors.show_id = tv_shows.id;
+
+/* Which actors were in Star Wars: Attack of the Clones? */
+SELECT actors.name as Actor
+FROM actors
+JOIN movies
+ON actors.movie_id = movies.id
+WHERE movies.id = 4;
