@@ -1,0 +1,70 @@
+## For this project, I used data downloaded from Kaggle (https://www.kaggle.com/datasets/equinxx/spotify-top-50-songs-in-2021). 
+## I created a table I could input the downloaded data into, and performed analytics on that data using SQL.
+
+CREATE TABLE BIT_DB.SpotifyData (
+id INTEGER PRIMARY KEY, 
+artist_name VARCHAR NOT NULL,
+track_name VARCHAR NOT NULL, 
+track_id VARCHAR NOT NULL, 
+popularity INTEGER NOT NULL, 
+danceability DECIMAL(4,3) NOT NULL, 
+energy DECIMAL(4,3) NOT NULL,
+song_key INTEGER NOT NULL,
+loudness DECIMAL (5,3) NOT NULL,
+song_mode INTEGER NOT NULL,
+speechiness DECIMAL (5,4) NOT NULL,
+acousticness DECIMAL(6,5) NOT NULL,
+instrumental DECIMAL (8,7) NOT NULL, 
+liveness DECIMAL (5,4) NOT NULL,
+valence DECIMAL (4,3) NOT NULL,
+tempo DECIMAL (6,3) NOT NULL,
+duration_ms INTEGER NOT NULL,
+time_signature INTEGER NOT NULL);
+
+SELECT * FROM BIT_DB.SpotifyData
+
+/* What was the most popular song on Spotify in 2021? */
+SELECT track_name
+FROM BIT_DB.SpotifyData
+ORDER BY popularity desc
+LIMIT 1;
+
+/* What was the average tempo of the songs with a popularity of over 90? */
+SELECT AVG(tempo)
+FROM BIT_DB.SpotifyData
+WHERE popularity > 90;
+
+/* Which artist had the most songs on the Spotify Top 50 for 2021? What was their average populatity? */
+SELECT artist_name, count(id) as NumSongs
+FROM BIT_DB.SpotifyData
+GROUP BY artist_name
+ORDER BY NumSongs desc
+LIMIT 1;
+
+/* Which artists had at least two songs on the Top 50 list for 2021? */
+SELECT distinct artist_name, COUNT(id) as NumSongs
+FROM BIT_DB.SpotifyData
+GROUP BY artist_name
+HAVING NumSongs > 1;
+
+/* What was the average song duration in minutes for all of the Top 50 Songs for 2021? */
+SELECT AVG(duration_ms)/1000/60 as duration_min
+FROM BIT_DB.SpotifyData;
+
+/* Were major or minor songs more popular? Use song_mode=1 for major; song_mode=0 for minor. */
+SELECT song_mode, AVG(popularity)
+FROM BIT_DB.SpotifyData
+GROUP BY song_mode;
+
+/* How many songs had tempos over 120 beats per minute? */
+SELECT COUNT(id) as NumSongs
+FROM BIT_DB.SpotifyData
+WHERE tempo > 120;
+
+/* Who are the Top 10 artists based on average popularity? */
+SELECT distinct artist_name, AVG(Popularity) as Popularity
+FROM BIT_DB.SpotifyData
+GROUP BY artist_name
+ORDER BY Popularity desc
+LIMIT 10;
+
