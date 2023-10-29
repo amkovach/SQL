@@ -1,0 +1,129 @@
+/* For this project, I used a dataset called chinook, which includes data from a digital media store.
+This dataset spans multiple tables including artists, albums, media tracks, invoices, and customers information. */
+
+/* 1. Show customers (full names, customer ID, and country) who are not in the US.*/
+SELECT CustomerId, LastName, FirstName, Country
+FROM customers
+WHERE Country <> 'USA';
+
+/* 2. Show only the customers from Brazil. */
+SELECT CustomerId, LastName, FirstName, Country
+FROM customers
+WHERE Country = 'Brazil';
+
+/* 3. Find the invoices of customers who are from Brazil. */
+SELECT LastName, FirstName, InvoiceId, InvoiceDate, BillingCountry
+FROM customers cust
+LEFT JOIN invoices inv
+ON cust.CustomerId = inv.CustomerId
+WHERE Country = 'Brazil'
+
+/* 4. Show the Employees who are Sales Agents. */
+SELECT EmployeeId, LastName, FirstName, Title
+FROM employees
+WHERE Title = 'Sales Support Agent';
+
+/* 5. Find a unique/distinct list of billing countries from the invoice table. */
+SELECT distinct BillingCountry
+FROM invoices
+ORDER BY BillingCountry asc
+
+/* 6. Provide a query that shows the invoices associated with each sales agent. The resulting table should include the Sales Agent's full name. */
+SELECT inv.InvoiceId, emp.LastName, emp.FirstName
+FROM invoices inv
+JOIN customers cust
+ON inv.CustomerId = cust.CustomerId
+JOIN employees emp
+ON cust.SupportRepId = emp.EmployeeId
+ORDER BY emp.LastName, InvoiceId asc;
+
+/* 7. Show the invoice total, customer name, country, and sales agent name for all invoices and customers. */
+SELECT cust.LastName, cust.FirstName, cust.Country, inv.Total as invoice_total, emp.LastName, emp.FirstName
+FROM invoices inv
+JOIN customers cust
+ON inv.CustomerId = cust.CustomerId
+JOIN employees emp
+ON cust.SupportRepId = emp.EmployeeId
+ORDER BY inv.total asc;
+
+/* 8. How many invoices were there in 2009? */
+SELECT COUNT(InvoiceId)
+FROM invoices
+HAVING InvoiceDate LIKE '2009%';
+
+/* 9. What are the total sales for 2009? */
+SELECT ROUND(SUM(Total),2)
+FROM invoices
+HAVING InvoiceDate LIKE '2009%';
+
+/* 10. Write a query that includes the purchased track name with each invoice line ID. */
+SELECT inv.InvoiceLineId, tracks.Name as track
+FROM invoice_items inv
+LEFT JOIN tracks
+ON inv.TrackId = tracks.TrackId
+Order By InvoiceLineId asc;
+
+/* 11. Write a query that includes the purchased track name AND artist name with each Invoice Line ID. */
+SELECT inv.InvoiceLineId, tracks.Name as track, artists.Name as artist
+FROM invoice_items inv
+LEFT JOIN tracks
+ON inv.TrackId = tracks.TrackId
+JOIN albums
+ON tracks.AlbumId = albums.AlbumId
+JOIN artists
+ON albums.AlbumId = artists.ArtistId
+ORDER BY InvoiceLineId asc;
+
+/* 12. Provide a query that shows all the Tracks, and include Album Name, Media Type, and Genre. */
+SELECT tracks.Name as track, albums.Title as album, media_types.Name as media_type, genres.Name as genre
+FROM tracks
+JOIN albums
+ON tracks.AlbumId = albums.AlbumId
+JOIN media_types
+ON tracks.MediaTypeId = media_types.MediaTypeId
+JOIN genres 
+ON tracks.GenreId = genres.GenreId
+ORDER BY tracks.Name asc;
+
+/* 13. Show the total sales made by each sales agent. */
+SELECT distinct ROUND(SUM(inv.Total),2) as sales_total, emp.LastName, emp.FirstName
+FROM invoices inv
+JOIN customers cust
+ON inv.CustomerId = cust.CustomerId
+JOIN employees emp
+ON cust.SupportRepId = emp.EmployeeId
+GROUP BY emp.LastName
+ORDER BY sales_total asc;
+
+/* 14. Which sales agent made the most dollars in sales in 2009? */
+SELECT distinct ROUND(SUM(inv.Total), 2) as sales_total, emp.LastName, emp.FirstName
+FROM invoices inv
+JOIN customers cust
+ON inv.CustomerId = cust.CustomerId
+JOIN employees emp
+ON cust.SupportRepId = emp.EmployeeId
+WHERE inv.InvoiceDate LIKE '2009%'
+GROUP BY emp.LastName
+ORDER BY sales_total desc 
+LIMIT 1;
+
+/* 15. How many playlists does each track show up on? */
+SELECT tracks.Name as track, COUNT(playlist_track.PlaylistId) as NumPlaylists
+FROM playlist_track
+LEFT JOIN tracks
+ON playlist_track.TrackId = tracks.TrackId
+GROUP BY track 
+ORDER BY NumPlaylists desc;
+
+/* 16. Which track shows up on the most number of playlists? Who is the artist & what album is the track from? */
+SELECT tracks.Name as track, artists.Name as artist, albums.Title as album, COUNT(playlist_track.PlaylistId) as NumPlaylists
+FROM playlist_track
+LEFT JOIN tracks
+ON playlist_track.TrackId = tracks.TrackId
+JOIN albums
+ON tracks.AlbumId = albums.AlbumId
+JOIN artists 
+ON albums.ArtistId = artists.ArtistId
+GROUP BY track 
+ORDER BY NumPlaylists desc
+LIMIT 1;
